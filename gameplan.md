@@ -33,8 +33,8 @@
 ---
 
 ## Phase 3 — Editor Quality of Life
-- [ ] Add flood fill with `f` key
-- [ ] Add auto-paint mode (hold-to-draw as cursor moves)
+- [x] Add flood fill with `f` key
+- [x] Add auto-paint mode (hold-to-draw as cursor moves)
 - [ ] Show tile name and type info for the tile under the cursor
 - [ ] Add an undo stack (circular buffer of last N world states or diff operations)
 - [ ] Show canvas grid coordinates somewhere in the UI

@@ -44,7 +44,7 @@ typedef struct {
     int      active; // 0 = slot unused
 } Entity;
 
-//  World — the shared source of truth
+//  World — the shared global context
 #define MAP_WIDTH 40
 #define MAP_HEIGHT 20
 

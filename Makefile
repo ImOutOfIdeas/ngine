@@ -1,6 +1,6 @@
 CC      := gcc
 CFLAGS  := -g -Wall -Wextra -Iinclude
-LDFLAGS := -lncurses
+LDFLAGS := -lncursesw
 
 SRC     := $(wildcard src/*.c)
 HEADERS := $(wildcard include/*.h)
