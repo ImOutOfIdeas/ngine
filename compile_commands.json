@@ -1,0 +1,34 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Iinclude",
+      "-o",
+      "bin/a.out",
+      "src/main.c"
+    ],
+    "directory": "/var/home/jonat/Dev/renderer",
+    "file": "/var/home/jonat/Dev/renderer/src/main.c",
+    "output": "/var/home/jonat/Dev/renderer/bin/a.out"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Iinclude",
+      "-o",
+      "bin/a.out",
+      "src/world.c"
+    ],
+    "directory": "/var/home/jonat/Dev/renderer",
+    "file": "/var/home/jonat/Dev/renderer/src/world.c",
+    "output": "/var/home/jonat/Dev/renderer/bin/a.out"
+  }
+]
