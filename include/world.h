@@ -5,9 +5,10 @@
 
 //  TILE DEFINITIONS
 //  X(id, name, glyph, fg, bg, solid, passable)
+//  Colors are used as fallback for basic color support
 #define TILE_LIST \
     X(TILE_EMPTY,  "Empty",  "  ", COLOR_WHITE,   COLOR_BLACK,   0, 1) \
-    X(TILE_WALL,   "Wall",   "##", COLOR_BLACK,   COLOR_BLUE,   1, 0) \
+    X(TILE_WALL,   "Wall",   "  ", COLOR_BLACK,   COLOR_MAGENTA,   1, 0) \
     X(TILE_FLOOR,  "Floor",  "  ", COLOR_BLACK,   COLOR_WHITE,   1, 1) \
     X(TILE_BUTTON, "Button", "()", COLOR_BLACK,   COLOR_YELLOW,  0, 1) \
     X(TILE_DOOR,   "Door",   "||", COLOR_BLACK,   COLOR_MAGENTA, 1, 0) \
@@ -62,5 +63,6 @@ void      world_set_tile(World *w, int x, int y, TileType t);
 void      world_draw_tile(int y, int x, TileType t);
 int       world_save(const World *w, const char *path);
 int       world_load(World *w, const char *path);
+void      world_flood_fill(World *w, int x, int y, TileType replace, TileType target);
 
 #endif

@@ -28,24 +28,24 @@ static void draw_cursor(int x, int y) {
 //  Draw the tile palette bar
 static void draw_palette(TileType cur_tile) {
     mvprintw(SELECTION_ROW, 0, "Tile: ");
-    int col = 6;
+    int column_offset = 6;
     for (int i = 0; i < NUM_TILE_TYPES; i++) {
         TileDef *def = &tile_defs[i];
         if (def->color_pair) attron(COLOR_PAIR(def->color_pair));
         if (i != (int)cur_tile) attron(A_BOLD | A_REVERSE);
 
-        mvprintw(SELECTION_ROW, col, " %d:%-7s", i, def->name);
+        mvprintw(SELECTION_ROW, column_offset, " %d:%-7s", i, def->name);
 
         if (i != (int)cur_tile) attroff(A_BOLD | A_REVERSE);
         if (def->color_pair) attroff(COLOR_PAIR(def->color_pair));
 
-        col += 10;
+        column_offset += 10;
     }
 }
 
 //  Draw the help bar and status message
 static void draw_help(const EditorState *e) {
-    mvprintw(HELP_ROW, 0, "Arrows/hjkl:move  Space:paint  S:save  O:load  Q:quit");
+    mvprintw(HELP_ROW, 0, "hjkl:move Shift+hjl:brush Space:paint f:fill S:save  O:load  Q:quit");
     mvprintw(STATUS_ROW, 0, "Status: %s", e->status);
     clrtoeol();
 }
@@ -94,23 +94,42 @@ int main(void) {
         editor.status[0] = '\0'; // clear status each frame
 
         switch (ch) {
-            case KEY_UP:
+            // Basic movement
+            case 'k':
+                if (editor.cur_y > 0) editor.cur_y--;
+                break;
+            case 'j':
+                if (editor.cur_y < MAP_HEIGHT - 1) editor.cur_y++;
+                break;
+            case 'h':
+                if (editor.cur_x > 0) editor.cur_x--;
+                break;
+            case 'l':
+                if (editor.cur_x < MAP_WIDTH - 1) editor.cur_x++;
+                break;
+
+            // Shift movement paints tile under cursor
+            case 'K':
                 if (editor.cur_y > 0) {
+                    world_set_tile(&world, editor.cur_x, editor.cur_y, editor.cur_tile);
                     editor.cur_y--;
                 }
                 break;
-            case KEY_DOWN:
+            case 'J':
                 if (editor.cur_y < MAP_HEIGHT - 1) {
+                    world_set_tile(&world, editor.cur_x, editor.cur_y, editor.cur_tile);
                     editor.cur_y++;
                 }
                 break;
-            case KEY_LEFT:
+            case 'H':
                 if (editor.cur_x > 0) {
+                    world_set_tile(&world, editor.cur_x, editor.cur_y, editor.cur_tile);
                     editor.cur_x--;
                 }
                 break;
-            case KEY_RIGHT:
+            case 'L':
                 if (editor.cur_x < MAP_WIDTH - 1) {
+                    world_set_tile(&world, editor.cur_x, editor.cur_y, editor.cur_tile);
                     editor.cur_x++;
                 }
                 break;
@@ -156,6 +175,13 @@ int main(void) {
                     snprintf(editor.status, sizeof(editor.status), "loaded %s", path);
                 else
                     snprintf(editor.status, sizeof(editor.status), "load failed!");
+                break;
+            }
+
+            case 'f': case 'F': {
+                world_flood_fill(&world,
+                    editor.cur_x, editor.cur_y, editor.cur_tile,
+                    world_get_tile(&world, editor.cur_x, editor.cur_y));
                 break;
             }
 
