@@ -37,7 +37,7 @@
 - [x] Extract `EditorState` and all input handling into `editor.h` / `editor.c`
 - [x] Extract all ncurses drawing into `map_render.h` / `map_render.c`
 - [x] Thin `main.c` down to init + loop only (~25 lines)
-- [x] `editor_handle_input` returns 0 on quit so `main.c` needs no key knowledge
+- [x] `editor_handle_input` returns 0 on quit
 - [x] Add `hjkl` vim-style movement bindings
 - [x] Ensure `map_render.c` has no dependency on `editor.h` (clean layering)
 ---
@@ -45,7 +45,7 @@
 ## Phase 4 — Editor Quality of Life
 - [x] Add flood fill with `f` key
 - [x] Add auto-paint mode (hold-to-draw as cursor moves)
-- [ ] Show tile name and type info for the tile under the cursor in the status bar
+- [x] implement the map view and status bar inside there own windows
 - [ ] Add an undo stack (circular buffer of last N world states or diff operations)
 - [ ] Show canvas grid coordinates in the UI
 ---
@@ -60,8 +60,8 @@
 
 ## Phase 6 — Game Simulation
 - [ ] Create `sim.h` / `sim.c` with `SimState` struct (player pos, velocity, etc.)
-- [ ] Implement `sim_init(SimState *s, World *w)` — reads `TILE_SPAWN` for player start
-    - [ ] Ensure only one spawn can be place on any given map (choose furthers from goal if many?)
+- [ ] Implement `sim_init(SimState *s, World *w)` — reads `TILE_SPAWN` for start
+    - [ ] Ensure only one spawn is on the map (furthest from goal if many?)
 - [ ] Implement `sim_step(SimState *s, World *w, InputFrame *input, float dt)`
 - [ ] Add tile-based collision detection (walls block movement)
 - [ ] Implement movement model (FPS)

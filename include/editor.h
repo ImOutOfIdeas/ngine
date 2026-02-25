@@ -15,6 +15,6 @@ void editor_render      (const EditorState *e, const World *w);
 // Returns 0 if the editor requests quit, 1 otherwise
 int  editor_handle_input(EditorState *e, World *w, int ch);
 
-void prompt_filename(const char *prompt, char *out, int maxlen);
+void prompt_filename(WINDOW *win, const char *prompt, char *out, int maxlen);
 
 #endif

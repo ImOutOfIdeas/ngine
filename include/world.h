@@ -13,7 +13,7 @@
     X(TILE_BUTTON, "Button", "()", COLOR_BLACK,   COLOR_YELLOW,  0, 1) \
     X(TILE_DOOR,   "Door",   "||", COLOR_BLACK,   COLOR_MAGENTA, 1, 0) \
     X(TILE_SPAWN,  "Spawn",  "@ ", COLOR_BLACK,   COLOR_GREEN,   0, 1) \
-    X(TILE_GOAL,   "Goal",   "><", COLOR_BLACK,   COLOR_CYAN,    0, 1)
+    X(TILE_GOAL,   "Goal",   "><", COLOR_BLACK,   COLOR_CYAN,    0, 1) \
 
 //  TileType enum — generated from TILE_LIST
 typedef enum {
@@ -50,6 +50,8 @@ typedef struct {
 
 typedef struct {
     TileType tiles[MAP_HEIGHT][MAP_WIDTH];
+    WINDOW *map_window;
+    WINDOW *status_window;
     Entity   entities[MAX_ENTITIES];
     int      entity_count;
     int      width, height;
@@ -60,7 +62,6 @@ void      world_init(World *w);
 void      world_setup_colors(void);   // call after start_color()
 TileType  world_get_tile(const World *w, int x, int y);
 void      world_set_tile(World *w, int x, int y, TileType t);
-void      world_draw_tile(int y, int x, TileType t);
 int       world_save(const World *w, const char *path);
 int       world_load(World *w, const char *path);
 void      world_flood_fill(World *w, int x, int y, TileType replace, TileType target);

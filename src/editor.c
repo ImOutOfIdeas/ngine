@@ -15,17 +15,27 @@ void editor_init(EditorState *e) {
 
 void editor_render(const EditorState *e, const World *w) {
     map_render_canvas(w);
-    map_render_cursor(e->cur_x, e->cur_y);
-    map_render_palette(e->cur_tile);
-    map_render_help(e->status);
+    map_render_cursor(w->map_window, e->cur_x, e->cur_y);
+    map_render_palette(w->status_window, e->cur_tile);
+    map_render_status(w->status_window, e->status);
 }
 
-void prompt_filename(const char *prompt, char *out, int maxlen) {
+void prompt_filename(WINDOW *win, const char *prompt, char *out, int maxlen) {
+    int row = 3;
+    int prompt_len = strlen(prompt);
+    int width = getmaxx(win);
+
     echo();
     curs_set(1);
-    mvprintw(MAP_HEIGHT + 3, 0, "%s", prompt);
-    clrtoeol();
-    getnstr(out, maxlen - 1);
+    mvwprintw(win, row, 1, "%s", prompt);
+
+    // Clear prompt without erasing border
+    for (int i = 1 + prompt_len; i < width - 1; i++)
+        mvwaddch(win, row, i, ' ');
+
+    wrefresh(win);
+    wmove(win, row, 1 + prompt_len);  // move cursor after prompt
+    wgetnstr(win, out, maxlen - 1);
     noecho();
     curs_set(0);
 }
@@ -102,7 +112,8 @@ int editor_handle_input(EditorState *e, World *w, int ch) {
 
         case 's': case 'S': {
             char path[128];
-            prompt_filename("Save to: ", path, sizeof(path));
+
+            prompt_filename(w->status_window, "Save to: ", path, sizeof(path));
             if (world_save(w, path))
                 snprintf(e->status, sizeof(e->status), "saved to %s", path);
             else
@@ -112,7 +123,7 @@ int editor_handle_input(EditorState *e, World *w, int ch) {
 
         case 'o': case 'O': {
             char path[128];
-            prompt_filename("Open file: ", path, sizeof(path));
+            prompt_filename(w->status_window, "Open file: ", path, sizeof(path));
             if (world_load(w, path))
                 snprintf(e->status, sizeof(e->status), "loaded %s", path);
             else
@@ -120,8 +131,25 @@ int editor_handle_input(EditorState *e, World *w, int ch) {
             break;
         }
 
+        case 'i': {
+            map_render_info(e->cur_x, e->cur_y);
+            break;
+        }
+
         case 'q': case 'Q':
             return 0;
+            break;
+
+        case KEY_RESIZE:
+            resize_term(0, 0);
+            clear();
+            refresh();
+            redrawwin(w->map_window);
+            redrawwin(w->status_window);
+            box(w->map_window, 0, 0);
+            box(w->status_window, 0, 0);
+            snprintf(e->status, sizeof(e->status), "terminal resized");
+            break;
     }
 
     return 1;

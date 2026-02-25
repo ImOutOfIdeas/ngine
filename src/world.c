@@ -1,5 +1,6 @@
 #include "world.h"
 
+#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -74,7 +75,7 @@ static const int fg_rgb[][3] = {
     {  86, 182, 194 },  // GOAL   — cyan
 };
 static const int bg_rgb[][3] = {
-    {  30,  31,  38 },  // EMPTY  — background
+    {  0,    0,   0 },  // EMPTY  — background
     {  40,  44,  52 },  // FLOOR  — surface
     {  35,  65, 110 },  // WALL   — deep blue, brightened
     {  65,  48,  18 },  // BUTTON — deep amber
@@ -107,28 +108,34 @@ void world_init(World *w) {
     for (int y = 0; y < MAP_HEIGHT; y++)
         for (int x = 0; x < MAP_WIDTH; x++)
             w->tiles[y][x] = TILE_EMPTY;
+
+    w->map_window    = newwin(MAP_HEIGHT + 2, MAP_WIDTH * 2 + 2, 0, 0);
+    w->status_window = newwin(5, MAP_WIDTH * 2 + 2, MAP_HEIGHT + 2, 0);
+
+    keypad(w->map_window, TRUE);
+    keypad(w->status_window, TRUE);
+
+    box(w->map_window, 0, 0);
+    box(w->status_window, 0, 0);
 }
 
-//  Tile accessors
+//  Tile accessor
 TileType world_get_tile(const World *w, int x, int y) {
     if (x < 0 || x >= w->width || y < 0 || y >= w->height)
         return TILE_WALL;
+
     return w->tiles[y][x];
 }
 
+//  Tile mutator
 void world_set_tile(World *w, int x, int y, TileType t) {
-    if (x < 0 || x >= w->width || y < 0 || y >= w->height) return;
+    if (x < 0 || x >= w->width || y < 0 || y >= w->height)
+        return;
+
     w->tiles[y][x] = t;
 }
 
-void world_draw_tile(int y, int x, TileType t) {
-    TileDef *def = &tile_defs[t];
-    attron(COLOR_PAIR(def->color_pair));
-    mvprintw(y, x * 2, "%s", def->glyph);
-    attroff(COLOR_PAIR(def->color_pair));
-}
-
-//  Save / load  (plain text format)
+//  Save / load  into plain text format
 int world_save(const World *w, const char *path) {
     FILE *f = fopen(path, "w");
     if (!f) return 0;
@@ -181,7 +188,7 @@ void world_flood_fill(World *w, int x, int y, TileType replace, TileType target)
     if (replace == target) return;
     if (world_get_tile(w, x, y) != target) return;
 
-    // simple stack using a flat array — max size is the whole map
+    // Stack using a flat array — size is the whole map
     int stack[MAP_WIDTH * MAP_HEIGHT][2];
     int top = 0;
 
@@ -197,7 +204,7 @@ void world_flood_fill(World *w, int x, int y, TileType replace, TileType target)
         if (world_get_tile(w, cx, cy) != target) continue;
         world_set_tile(w, cx, cy, replace);
 
-        // push 4 neighbors
+        // Push neighbors onto the stack
         if (cx > 0)             { stack[top][0]=cx-1; stack[top][1]=cy;   top++; }
         if (cx < w->width - 1)  { stack[top][0]=cx+1; stack[top][1]=cy;   top++; }
         if (cy > 0)             { stack[top][0]=cx;   stack[top][1]=cy-1; top++; }

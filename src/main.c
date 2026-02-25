@@ -8,7 +8,6 @@ int main(void) {
     noecho();
     cbreak();
     curs_set(0);
-    keypad(stdscr, TRUE);
 
     world_setup_colors();
 
@@ -20,9 +19,10 @@ int main(void) {
 
     while (1) {
         editor_render(&editor, &world);
-        refresh();
 
-        int ch = getch();
+        doupdate();
+
+        int ch = wgetch(world.map_window);
         if (!editor_handle_input(&editor, &world, ch))
             break;
     }
