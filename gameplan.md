@@ -51,9 +51,9 @@
 ---
 
 ## Phase 5 — Entities & Metadata
-- [ ] `Entity` struct is defined in `world.h` — wire it up in the editor
-- [ ] Render entity glyphs on top of tiles in `map_render.c`
-- [ ] Implement entity inspector sub-mode (`e` key when cursor is on an entity tile)
+- [x] `Entity` struct is defined in `world.h` — wire it up in the editor
+- [x] Render entity glyphs on top of tiles in `map_render.c`
+- [x] Implement inspector sub-mode (`i`)
 - [ ] Implement link mode (`l` key) to wire buttons to doors by cursor selection
 - [ ] Confirm entities are included in save/load (skeleton already exists in `world_save` / `world_load`)
 ---

@@ -5,6 +5,7 @@
 int main(void) {
     initscr();
     start_color();
+    use_default_colors();   // enables transparent background in color pairs
     noecho();
     cbreak();
     curs_set(0);
@@ -19,7 +20,6 @@ int main(void) {
 
     while (1) {
         editor_render(&editor, &world);
-
         doupdate();
 
         int ch = wgetch(world.map_window);

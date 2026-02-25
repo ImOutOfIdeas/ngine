@@ -4,9 +4,11 @@
 #include "world.h"
 
 typedef struct {
-    int      cur_x, cur_y;
-    TileType cur_tile;
-    char     status[256];
+    int        cur_x, cur_y;
+    TileType   cur_tile;
+    EntityType cur_entity;
+    PaintMode  mode;
+    char       status[256];
 } EditorState;
 
 void editor_init        (EditorState *e);
